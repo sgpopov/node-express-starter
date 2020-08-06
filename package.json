@@ -1,0 +1,40 @@
+{
+  "name": "node-express-starter",
+  "version": "1.0.0",
+  "description": "A starter project for building RESTful APIs using Node.js",
+  "main": "src/app.ts",
+  "scripts": {
+    "build": "rimraf dist && tsc -p .",
+    "start:dev": "cross-env NODE_ENV=development && node --inspect=5858 -r ts-node/register ./src/app.ts",
+    "start:prod": "cross-env NODE_ENV=production && node dist/app.js",
+    "start:watch": "nodemon"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sgpopov/node-express-starter.git"
+  },
+  "keywords": [
+    "NodeJS",
+    "TypeScript",
+    "express",
+    "boilerplate",
+    "starter"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "cross-env": "^7.0.2",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.7",
+    "@types/node": "^14.0.27",
+    "nodemon": "^2.0.4",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
+  }
+}
