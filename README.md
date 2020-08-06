@@ -6,6 +6,7 @@ A starter project for quickly building production-ready RESTful APIs using TypeS
 
 - **TypeScript**
 - **Environment variables**: using [dotenv](https://github.com/motdotla/dotenv) and [cross-env](https://github.com/kentcdodds/cross-env#readme)
+- **Linting**: with [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/)
 
 ## Getting Started
 
