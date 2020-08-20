@@ -1,6 +1,9 @@
-import express, { Application, Request, Response } from 'express';
+import 'reflect-metadata';
+import express, { Application } from 'express';
 import { join } from 'path';
 import * as dotenv from 'dotenv';
+import { useExpressServer } from 'routing-controllers';
+import HelloWorldController from './modules/hello-world/hello-world.controller';
 
 dotenv.config({
   path: join(__dirname, '../.env'),
@@ -9,10 +12,10 @@ dotenv.config({
 const app: Application = express();
 const port = process.env.PORT || 3000;
 
-app.get('/', (req: Request, res: Response) => {
-  res.json({
-    greeting: 'Hello',
-  });
+useExpressServer(app, {
+  controllers: [
+    HelloWorldController,
+  ],
 });
 
 app.listen(port, () => {
