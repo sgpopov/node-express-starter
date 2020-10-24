@@ -8,6 +8,7 @@ A starter project for quickly building production-ready RESTful APIs using TypeS
 - **Environment variables**: using [dotenv](https://github.com/motdotla/dotenv) and [cross-env](https://github.com/kentcdodds/cross-env#readme)
 - **Gracefully shutdown**: Gracefully terminate the server using [http-terminator](https://github.com/gajus/http-terminator)
 - **Linting**: with [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/)
+- **Compression**: gzip compression with [compression](https://github.com/expressjs/**compression**)
 
 ## Getting Started
 
