@@ -10,6 +10,7 @@ const app: Application = express();
 app.use(helmet());
 
 useExpressServer(app, {
+  cors: true,
   controllers: [
     HelloWorldController,
   ],
