@@ -1,66 +1,114 @@
-/* eslint-disable no-console */
-import * as dotenv from 'dotenv';
+import 'dotenv/config';
+import 'reflect-metadata';
 import { createHttpTerminator, HttpTerminator, HttpTerminatorConfig } from 'http-terminator';
-import { join } from 'path';
 import { Server } from 'http';
+import { Container } from 'typedi';
 import app from './app';
+import providers from './providers';
+import { OnApplicationShutdown, Provider } from './contracts';
 
-dotenv.config({
-  path: join(__dirname, '../.env'),
-});
+class Application {
+  private server: Server;
 
-const port = process.env.PORT || 3000;
+  private port: number | string;
 
-const server: Server = app.listen(port, () => {
-  console.log(`Server is up and running on port ${port}`);
-});
+  private terminator: HttpTerminator;
 
-const serverConfig: HttpTerminatorConfig = {
-  server,
-};
-
-const terminator: HttpTerminator = createHttpTerminator(serverConfig);
-
-const shutdown: () => void = async () => {
-  await terminator.terminate();
-};
-
-const unexpectedErrorHandler = (error: NodeJS.ErrnoException) => {
-  if (error.syscall !== 'listen') {
-    throw error;
+  constructor() {
+    this.port = process.env.PORT || 3000;
   }
 
-  const bind = typeof port === 'string'
-    ? `Pipe ${port}`
-    : `Port ${port}`;
+  public boot() {
+    this.registerProviders();
 
-  switch (error.code) {
-    case 'EACCES':
-      console.error(`${bind} requires elevated privileges`);
-      shutdown();
-      break;
+    this.server = app.listen(this.port, () => {
+      console.log(`Server is up and running on port ${this.port}`);
+    });
 
-    case 'EADDRINUSE':
-      console.error(`${bind} is already in use`);
-      shutdown();
-      break;
+    const serverConfig: HttpTerminatorConfig = {
+      server: this.server,
+    };
 
-    default:
-      throw error;
+    this.terminator = createHttpTerminator(serverConfig);
+
+    this.registerErrorHandlers();
   }
-};
 
-process.on('uncaughtException', unexpectedErrorHandler);
-process.on('unhandledRejection', unexpectedErrorHandler);
+  private registerErrorHandlers() {
+    const shutdown: () => void = async () => {
+      this.shutdownProviders();
 
-process.on('SIGINT', () => {
-  console.log('\nGot SIGINT. Graceful shutdown.');
+      await this.terminator.terminate();
+    };
 
-  shutdown();
-});
+    const unexpectedErrorHandler = (error: NodeJS.ErrnoException) => {
+      if (error.syscall !== 'listen') {
+        throw error;
+      }
 
-process.on('SIGTERM', () => {
-  console.log('\nGot SIGTERM. Graceful shutdown.');
+      const bind = typeof this.port === 'string'
+        ? `Pipe ${this.port}`
+        : `Port ${this.port}`;
 
-  shutdown();
-});
+      switch (error.code) {
+        case 'EACCES':
+          console.error(`${bind} requires elevated privileges`);
+          shutdown();
+          break;
+
+        case 'EADDRINUSE':
+          console.error(`${bind} is already in use`);
+          shutdown();
+          break;
+
+        default:
+          throw error;
+      }
+    };
+
+    process.on('uncaughtException', unexpectedErrorHandler);
+    process.on('unhandledRejection', unexpectedErrorHandler);
+
+    process.on('SIGINT', () => {
+      console.log('\nGot SIGINT. Graceful shutdown.');
+
+      shutdown();
+    });
+
+    process.on('SIGTERM', () => {
+      console.log('\nGot SIGTERM. Graceful shutdown.');
+
+      shutdown();
+    });
+  }
+
+  private registerProviders() {
+    Container.import(providers);
+
+    const services = Container.getMany('app');
+
+    services.forEach((service: any) => {
+      if (!service || typeof (service as Provider).register !== 'function') {
+        return;
+      }
+
+      (service as Provider).register();
+    });
+  }
+
+  private shutdownProviders() {
+    const services = Container.getMany('app');
+
+    services.forEach((service: any) => {
+      if (!service || typeof (service as OnApplicationShutdown).onShutdown !== 'function') {
+        return;
+      }
+
+      (service as OnApplicationShutdown).onShutdown();
+    });
+  }
+}
+
+const application = new Application();
+
+application.boot();
