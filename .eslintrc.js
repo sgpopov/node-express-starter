@@ -39,6 +39,7 @@ module.exports = {
         'ts': 'never',
       }
     ],
+    'import/prefer-default-export': 'off',
     'class-methods-use-this': 0
   },
 };
