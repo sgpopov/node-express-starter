@@ -1,3 +1,3 @@
 export default {
-  debug: process.env.DEBUG || false,
+  debug: !!process.env.DEBUG || false,
 };
