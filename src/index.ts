@@ -1,5 +1,3 @@
-import 'dotenv/config';
-import 'reflect-metadata';
 import { createHttpTerminator, HttpTerminator, HttpTerminatorConfig } from 'http-terminator';
 import { Server } from 'http';
 import { Container } from 'typedi';
