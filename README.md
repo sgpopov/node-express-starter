@@ -4,7 +4,8 @@ A starter project for quickly building production-ready RESTful APIs using TypeS
 
 ## Features
 
-- **TypeScript**
+- Create structured, declarative, and organized class-based app with heavy decorators usage using **TypeScript** and [Routing Controllers Framework](https://github.com/typestack/routing-controllers)
+- **Validation**: request data validation using [class-validator](https://github.com/typestack/class-validator)
 - **Environment variables**: using [dotenv](https://github.com/motdotla/dotenv) and [cross-env](https://github.com/kentcdodds/cross-env#readme)
 - **Dependency injection**: using [typedi](https://github.com/typestack/typedi)
 - **SQL database**: object data modeling using [TypeORM](https://typeorm.io/#/)
