@@ -1,0 +1,55 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-18.04'
+
+steps:
+- task: NodeTool@0
+  displayName: 'Set node version'
+  inputs:
+    versionSpec: 12.x
+
+- task: Npm@1
+  displayName: 'Install project dependencies'
+  inputs:
+    verbose: false
+
+- task: Npm@1
+  displayName: 'Aduit and fix'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'audit fix'
+
+- task: Npm@1
+  displayName: 'Lint the code'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'run lint'
+
+- task: Npm@1
+  displayName: 'Build project'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'run build'
+
+- task: ArchiveFiles@2
+  displayName: 'Archive files'
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    includeRootFolder: false
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(TargetFolder)'
+  inputs:
+    SourceFolder: '$(Build.ArtifactStagingDirectory)'
+    Contents: '$(Build.BuildId).zip'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish artifacts: drop'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)\ArtifactsToBePublished'
