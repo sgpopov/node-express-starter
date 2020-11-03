@@ -1,5 +1,5 @@
 trigger:
-- master
+- env-example
 
 pool:
   vmImage: 'ubuntu-18.04'

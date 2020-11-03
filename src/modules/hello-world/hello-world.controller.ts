@@ -13,9 +13,10 @@ import {
 @JsonController('/hello-world')
 class HelloWorldController {
   @Get('/')
-  getAll() {
+  index() {
     return {
-      message: 'This action returns all records',
+      variable: 'EXAMPLE_VARIABLE',
+      value: process.env.EXAMPLE_VARIABLE,
     };
   }
 

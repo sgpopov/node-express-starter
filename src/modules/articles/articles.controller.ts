@@ -24,10 +24,11 @@ import { ArticleResolver } from './resolvers/resolve-article';
 @JsonController('/articles')
 class ArticlesController {
   @Get('/')
-  async index(): Promise<Article[]> {
-    const action = new IndexArticles();
-
-    return action.execute();
+  index() {
+    return {
+      variable: 'EXAMPLE_VARIABLE',
+      value: process.env.EXAMPLE_VARIABLE,
+    };
   }
 
   @Get('/:id')
